@@ -17,6 +17,10 @@ class UserController:
         except ValueError as e:
             return jsonify({"error": str(e)}), 400
 
+        except Exception as e:
+            print("Unexpected error:", e)
+            return jsonify({"error": "Internal server error"}), 500
+
     def list_users(self):
 
         users = self.service.list_users()
