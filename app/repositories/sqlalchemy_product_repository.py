@@ -15,3 +15,30 @@ class SQLAlchemyProductRepository(ProductRepository):
 
     def find_all(self):
         return Product.query.all()
+
+    def find_by_id(self, id):
+        return Product.query.get(id)
+
+    def update(self, id, data):
+        product = Product.query.get(id)
+
+        if not product:
+            return None
+
+        product.name = data.get("name", product.name)
+        product.price = data.get("price", product.price)
+
+        db.session.commit()
+
+        return product
+
+    def delete(self, id):
+        product = Product.query.get(id)
+
+        if not product:
+            return False
+
+        db.session.delete(product)
+        db.session.commit()
+
+        return True

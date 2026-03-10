@@ -1,8 +1,10 @@
 from flask import jsonify, request
 
+from app.services.product_service import ProductService
+
 
 class ProductController:
-    def __init__(self, service):
+    def __init__(self, service: ProductService):
         self.service = service
 
     def create_product(self):
@@ -28,3 +30,37 @@ class ProductController:
         return jsonify(
             [{"id": p.id, "name": p.name, "price": p.price} for p in products]
         )
+
+    def get_product(self, product_id):
+        try:
+            product = self.service.get_product(product_id)
+            print("type", type(product))
+            return jsonify(
+                {"id": product.id, "name": product.name, "price": product.price}
+            )
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 404
+
+    def update_product(self, product_id):
+        try:
+            data = request.json
+            product = self.service.update_product(product_id, data)
+
+            return jsonify(
+                {"id": product.id, "name": product.name, "price": product.price}
+            )
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 404
+        except Exception as e:
+            print("Unexpected error:", e)
+            return jsonify({"error": "Internal server error"}), 500
+
+    def delete_product(self, product_id):
+        try:
+            product = self.service.delete_product(product_id)
+            return jsonify({"message": f"Product {product.name} has been deleted"})
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 404
+        except Exception as e:
+            print("Unexpected error:", e)
+            return jsonify({"error": "Internal server error"}), 500
