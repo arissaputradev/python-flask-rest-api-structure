@@ -1,6 +1,3 @@
-from app.models.user import User
-
-
 class UserService:
     def __init__(self, repository):
         self.repository = repository
@@ -10,7 +7,8 @@ class UserService:
         if not name:
             raise ValueError("Name is required")
 
-        user = User(name, email)
+        user = {"name": name, "email": email}
+        print(user)
 
         return self.repository.save(user)
 
