@@ -11,8 +11,9 @@ class UserService:
 
         return self.repository.save(user)
 
-    def list_users(self):
-        return self.repository.find_all()
+    def list_users(self, page, limit, email=None, sort=None, search=None):
+        # return self.repository.find_all()
+        return self.repository.find_all(page, limit, email, sort, search)
 
     def get_user(self, user_id):
         user = self.repository.find_by_id(user_id)

@@ -24,10 +24,20 @@ class UserController:
             return jsonify({"error": "Internal server error"}), 500
 
     def list_users(self):
+        # users = self.service.list_users()
+        # return jsonify([{"id": u.id, "name": u.name, "email": u.email} for u in users])
+        try:
+            page = request.args.get("page", 1, type=int)
+            limit = request.args.get("limit", 10, type=int)
+            email = request.args.get("email")
+            sort = request.args.get("sort")
+            search = request.args.get("search")
 
-        users = self.service.list_users()
+            result = self.service.list_users(page, limit, email, sort, search)
 
-        return jsonify([{"id": u.id, "name": u.name, "email": u.email} for u in users])
+            return jsonify(result)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
 
     def get_user(self, user_id):
         try:
